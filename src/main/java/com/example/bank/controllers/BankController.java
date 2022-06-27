@@ -3,9 +3,7 @@ package com.example.bank.controllers;
 import com.example.bank.models.Account;
 import com.example.bank.models.Bank;
 import com.example.bank.models.Customer;
-import com.example.bank.service.AccountService;
 import com.example.bank.service.BankService;
-import com.example.bank.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,31 +14,65 @@ import java.util.List;
 public class BankController {
     @Autowired
     BankService bankService;
-    @Autowired
-    CustomerService customerService;
-    @Autowired
-    AccountService accountService;
+
     @PostMapping("/createBank")
-    public String createBank(@RequestBody Bank bank){
+    public String createBank(@RequestBody Bank bank) {
         return bankService.createBank(bank);
     }
 
-    @PostMapping("/addCustomer/{bankId}")
-    public String addCustomer(@PathVariable String bankId, @RequestBody Customer customer){
-        customerService.addCustomer(customer);
-        return bankService.addCustomer(bankId,customer);
+    @GetMapping("/viewBank/{bankId}")
+    public Bank getBank(@PathVariable String bankId) {
+        return bankService.getBank(bankId);
     }
-    @PostMapping("/addAccount/{bankId}/{customerId}")
-    public String addAccount(@PathVariable String bankId,@RequestBody Account account, @PathVariable String customerId){
-        return bankService.addAccount(bankId,account,customerId);
+
+    @PostMapping("/addCustomer/{bankNo}")
+    public String addCustomer(@PathVariable String bankNo, @RequestBody Customer customer) {
+        return bankService.addCustomer(bankNo, customer);
     }
-    @GetMapping("/getCustomer/{bankId}/{customerId}")
-    public Customer getCustomer(@PathVariable String bankId, @PathVariable String customerId){
-        return bankService.getCustomer(bankId,customerId);
+
+    @PostMapping("/addAccount/{bankNo}/{customerId}/{pin}")
+    public String addAccount(@PathVariable String bankNo, @RequestBody Account account,
+                             @PathVariable String customerId, @PathVariable String pin) {
+        return bankService.addAccount(bankNo, account, customerId, pin);
     }
-    @GetMapping("/getAllCustomers/{bankId}")
-    public List<Customer> getAllCustomers(@PathVariable String bankId){
-        return bankService.getAllCustomers(bankId);
+
+    @GetMapping("/getCustomer/{bankNo}/{customerId}")
+    public Customer getCustomer(@PathVariable String bankNo, @PathVariable String customerId) {
+        return bankService.getCustomer(bankNo, customerId);
     }
+
+    @GetMapping("/getAllCustomers/{bankNo}")
+    public List<Customer> getAllCustomers(@PathVariable String bankNo) {
+        return bankService.getAllCustomers(bankNo);
+    }
+
+    @PatchMapping("/deposit/{bankNo}/{customerNo}/{accountNo}/{amount}")
+    public String deposit(@PathVariable String accountNo,
+                          @PathVariable String bankNo, @PathVariable String customerNo,
+                          @PathVariable double amount) {
+        return bankService.deposit(bankNo, customerNo, accountNo, amount);
+    }
+
+    @PatchMapping("/withdraw/{bankNo}/{customerNo}/{accountNo}/{amount}")
+    public String withdraw(@PathVariable String accountNo,
+                           @PathVariable String bankNo, @PathVariable String customerNo,
+                           @PathVariable double amount) {
+        return bankService.withdraw(bankNo, customerNo, accountNo, amount);
+    }
+
+    @PatchMapping("/transfer/{bankNo}/{customerNo}/{senderAccountNo}/{receiverAccountNo}{amount}")
+    public String transfer(@PathVariable String bankNo,
+                           @PathVariable String customerNo,
+                           @PathVariable String senderAccountNo,
+                           @PathVariable String receiverAccountNo,
+                           @PathVariable double amount) {
+        return bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount);
+    }
+    @GetMapping("/getAccount/{bankNo}/{customerNo}/{accountNo}")
+    public Account getAccount(@PathVariable String accountNo, @PathVariable String bankNo,
+                              @PathVariable String customerNo){
+        return bankService.getAccount(bankNo,customerNo,accountNo);
+    }
+
 
 }

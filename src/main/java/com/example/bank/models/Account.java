@@ -9,9 +9,10 @@ import java.math.BigDecimal;
 @Document
 public class Account {
     @Id
+    private String id;
     private String accountNumber;
     private String accountName;
-    private BigDecimal bigDecimal;
+    private double balance;
     private String pin;
     private AccountTypes accountType;
 }

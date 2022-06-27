@@ -21,29 +21,27 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public String getBalance(String accountNumber) {
         Account account = accountRepository.findAccountByAccountNumber(accountNumber);
-        return String.valueOf(account.getBigDecimal());
+        return String.valueOf(account.getBalance());
     }
 
     @Override
-    public String deposit(String accountNumber, int amount) {
+    public String deposit(String accountNumber,double amount) {
         Account account = accountRepository.findAccountByAccountNumber(accountNumber);
-        BigDecimal value = BigDecimal.valueOf(amount);
-        account.getBigDecimal().add(value);
+        account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
         return "deposit successful";
     }
 
     @Override
-    public String withdraw(String accountNumber, int amount) {
+    public String withdraw(String accountNumber, double amount) {
         Account account = accountRepository.findAccountByAccountNumber(accountNumber);
-        BigDecimal value = BigDecimal.valueOf(amount);
-        account.getBigDecimal().subtract(value);
+        account.setBalance(account.getBalance() - amount);
         accountRepository.save(account);
         return "withdraw success";
     }
 
     @Override
-    public String transfer(Account account,String accountNumber,int amount) {
+    public String transfer(Account account,String accountNumber,double amount) {
         return null;
     }
 }

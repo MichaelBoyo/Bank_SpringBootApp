@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService{
     @Autowired
     CustomerRepository customerRepository;
+    private static int uid = 0;
     @Override
     public String addCustomer(Customer customer) {
+        customer.setCustomerNo(String.valueOf(++uid));
         customerRepository.save(customer);
         return "saved";
     }

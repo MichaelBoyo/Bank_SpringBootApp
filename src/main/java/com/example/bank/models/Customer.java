@@ -13,6 +13,7 @@ import java.util.List;
 public class Customer {
     @Id
     private String id;
+    private String customerNo;
     private  String year;
     private  String month;
     private  String day;

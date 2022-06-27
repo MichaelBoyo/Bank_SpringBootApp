@@ -14,6 +14,7 @@ import java.util.List;
 public class Bank {
     @Id
     private String bankId;
+    private String bankNo;
     private String bankName;
     @DBRef
     private List<Customer> customers = new ArrayList<>();

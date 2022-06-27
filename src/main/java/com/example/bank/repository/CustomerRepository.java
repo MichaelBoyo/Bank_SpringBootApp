@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends MongoRepository<Customer, String> {
     Customer getCustomerById(String id);
+    Customer findCustomerByCustomerNo(String customerNo);
     List<Customer> findAll();
 }
