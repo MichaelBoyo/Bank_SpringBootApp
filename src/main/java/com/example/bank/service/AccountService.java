@@ -1,11 +1,15 @@
 package com.example.bank.service;
 
 import com.example.bank.models.Account;
+import com.example.bank.models.TransactionHistory;
+
+import java.math.BigDecimal;
 
 public interface AccountService {
-    String addAccount(Account account);
-    String getBalance(String accountNumber);
-    String deposit(String accountNumber,double amount);
-    String withdraw(String accountNumber,double amount);
-    String transfer(Account account,String accountNumber, double amount);
+    Account addAccount(Account account);
+    BigDecimal getBalance(String accountNumber);
+    String deposit(Account account,TransactionHistory history);
+    String withdraw(String accountNumber,double amount, TransactionHistory history);
+
+    Account getAccount(String accountID);
 }
