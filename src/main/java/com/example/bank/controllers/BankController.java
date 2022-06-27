@@ -53,25 +53,30 @@ public class BankController {
         return bankService.deposit(bankNo, customerNo, accountNo, amount);
     }
 
-    @PatchMapping("/withdraw/{bankNo}/{customerNo}/{accountNo}/{amount}")
+    @PatchMapping("/withdraw/{bankNo}/{customerNo}/{accountNo}/{amount}/{pin}")
     public String withdraw(@PathVariable String accountNo,
                            @PathVariable String bankNo, @PathVariable String customerNo,
-                           @PathVariable double amount) {
-        return bankService.withdraw(bankNo, customerNo, accountNo, amount);
+                           @PathVariable double amount, @PathVariable String pin) {
+        return bankService.withdraw(bankNo, customerNo, accountNo, amount, pin);
     }
 
-    @PatchMapping("/transfer/{bankNo}/{customerNo}/{senderAccountNo}/{receiverAccountNo}{amount}")
+    @PatchMapping("/transfer/{bankNo}/{customerNo}/{senderAccountNo}/{receiverAccountNo}/{amount}/{pin}")
     public String transfer(@PathVariable String bankNo,
                            @PathVariable String customerNo,
                            @PathVariable String senderAccountNo,
                            @PathVariable String receiverAccountNo,
-                           @PathVariable double amount) {
-        return bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount);
+                           @PathVariable double amount, @PathVariable String pin) {
+        return bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount,pin);
     }
     @GetMapping("/getAccount/{bankNo}/{customerNo}/{accountNo}")
     public Account getAccount(@PathVariable String accountNo, @PathVariable String bankNo,
                               @PathVariable String customerNo){
         return bankService.getAccount(bankNo,customerNo,accountNo);
+    }
+    @GetMapping("/getBalance/{bankNo}/{customerNo}/{accountNo}")
+    public String getBalance(@PathVariable String accountNo,
+                             @PathVariable String bankNo, @PathVariable String customerNo){
+        return bankService.getBalance(bankNo,customerNo,accountNo);
     }
 
 

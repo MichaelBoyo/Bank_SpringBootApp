@@ -20,9 +20,12 @@ public interface BankService {
 
     Bank getBank(String bankId);
 
-    String withdraw(String bankNo, String customerNo, String accountNo, double amount);
+    String withdraw(String bankNo, String customerNo, String accountNo, double amount, String pin);
 
-    String transfer(String bankNo, String customerNo, String senderAccountNo, String receiverAccountNo, double amount);
+    String transfer(String bankNo, String customerNo,
+                    String senderAccountNo, String receiverAccountNo, double amount, String pin);
 
     Account getAccount(String bankNo, String customerID, String accountID);
+
+    String getBalance(String bankNo, String customerNo, String accountNo);
 }

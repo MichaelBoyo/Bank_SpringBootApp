@@ -10,26 +10,27 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static com.example.bank.models.AccountTypes.SAVINGS;
+
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountRepository accountRepository;
 
-    @Autowired
-    TransactionHistoryService txService;
     private static int uid = 0;
 
     @Override
-    public Account addAccount(Account account) {
+    public Account addAccount(Account account, String pin) {
         account.setAccountNumber(String.valueOf(++uid));
+        account.setPin(pin);
+        account.setAccountType(SAVINGS);
         return accountRepository.save(account);
     }
 
     @Override
-    public BigDecimal getBalance(String accountNumber) {
+    public BigDecimal getBalance(Account account) {
         BigDecimal currentBalance = new BigDecimal(0);
         final BigDecimal[] balance = {currentBalance};
-        Account account = accountRepository.findAccountByAccountNumber(accountNumber);
         account.getTransactionHistory().forEach(tx -> {
             switch (tx.getType()) {
                 case DEPOSIT, TRANSFER_IN -> balance[0] = balance[0].add(tx.getAmount());
@@ -42,20 +43,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String deposit(Account account,TransactionHistory history) {
-        TransactionHistory h = txService.addTransaction(history);
-        account.getTransactionHistory().add(h);
+        account.getTransactionHistory().add(history);
         accountRepository.save(account);
         return "deposit successful";
     }
 
     @Override
-    public String withdraw(String accountNumber, double amount, TransactionHistory history) {
-        Account account = accountRepository.findAccountByAccountNumber(accountNumber);
-        account.getTransactionHistory().add(history);
-
-        accountRepository.save(account);
-        return "withdraw success";
+    public String withdraw(Account account, TransactionHistory history,String pin) {
+        if(account.pinIsValid(pin)){
+            account.getTransactionHistory().add(history);
+            accountRepository.save(account);
+            return "successful";
+        }
+        return "failed";
     }
+
 
     @Override
     public Account getAccount(String accountID) {

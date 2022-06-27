@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,11 +19,8 @@ public class Account {
     private String pin;
     private AccountTypes accountType;
     @DBRef
-    private List<TransactionHistory> transactionHistory;
-    private boolean validatePin(String pin){
-        if(this.pin.equals(pin)){
-            return true;
-        }
-        throw new BankException("incorrect pin");
+    private List<TransactionHistory> transactionHistory = new ArrayList<>();
+    public boolean pinIsValid(String pin){
+        return this.pin.equals(pin);
     }
 }

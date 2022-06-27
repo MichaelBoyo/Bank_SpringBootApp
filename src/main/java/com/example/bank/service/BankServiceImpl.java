@@ -14,26 +14,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.bank.models.AccountTypes.SAVINGS;
 import static com.example.bank.models.TransactionType.*;
 
 @Service
 public class BankServiceImpl implements BankService {
     private static int uid = 0;
-    private static int cuid = 0;
     @Autowired
     BankRepository bankRepository;
-    @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
-    AccountRepository accountRepository;
     @Autowired
     AccountService accountService;
     @Autowired
     CustomerService customerService;
     @Autowired
-    TransactionHistory history;
-
+    TransactionHistoryService txService;
 
     @Override
     public String createBank(Bank bank) {
@@ -56,7 +49,7 @@ public class BankServiceImpl implements BankService {
         Bank bank = getBankFromDB(bankNo);
         Customer customerToAddAccount = customerService.getCustomer(customerID);
         if(bank.getCustomers().contains(customerToAddAccount)){
-            Account account1 = accountService.addAccount(account);
+            Account account1 = accountService.addAccount(account,pin);
             customerToAddAccount.getAccounts().add(account1);
             customerService.updateCustomer(customerToAddAccount);
             return "success";
@@ -100,20 +93,17 @@ public class BankServiceImpl implements BankService {
         if (bank.getCustomers().contains(customer)
                 && customer.getAccounts().contains(account)) {
             TransactionHistory history = depositHistory(amount);
-            return accountService.deposit(account,history);
+            TransactionHistory history_ = txService.addTransaction(history);
+            return accountService.deposit(account,history_);
+
         }
         return "deposit failed.. check details";
     }
     private static int  transactionNo = 0;
 
     private TransactionHistory depositHistory(double amount) {
-        TransactionHistory history = new TransactionHistory();
-        history.setTransactionId(String.valueOf(++transactionNo));
-        history.setDate(LocalDateTime.now());
-        history.setReceiver("self");
-        history.setAmount(BigDecimal.valueOf(amount));
-        history.setType(DEPOSIT);
-        return history;
+       return new TransactionHistory(String.valueOf(++transactionNo),BigDecimal.valueOf(amount),
+                DEPOSIT,LocalDateTime.now(),"self","self" );
     }
 
 
@@ -127,20 +117,18 @@ public class BankServiceImpl implements BankService {
 
     @Override
     public String withdraw(String bankNo, String customerNo,
-                           String accountNo, double amount) {
-        Bank bank = bankRepository.findBanksByBankNo(bankNo);
-        for (Customer customer : bank.getCustomers()) {
-            if (Objects.equals(customer.getCustomerNo(), customerNo)) {
-                for (Account account : customer.getAccounts()) {
-                    if (account.getAccountNumber().equals(accountNo)) {
-                        TransactionHistory history = withdrawHistory(amount);
-                        accountService.withdraw(accountNo, amount, history);
-                        return "success";
-                    }
-                }
-            }
+                           String accountNo, double amount, String pin) {
+        Bank bank = getBankFromDB(bankNo);
+        Customer customer = customerService.getCustomer(customerNo);
+        Account account = accountService.getAccount(accountNo);
+        if (bank.getCustomers().contains(customer)
+                && customer.getAccounts().contains(account)) {
+            TransactionHistory history = withdrawHistory(amount);
+            TransactionHistory history_ = txService.addTransaction(history);
+            return accountService.withdraw(account,history_,pin);
+
         }
-        return "failed";
+        return "deposit failed.. check details";
     }
 
     private TransactionHistory withdrawHistory(double amount) {
@@ -151,22 +139,22 @@ public class BankServiceImpl implements BankService {
     @Override
     public String transfer(String bankNo, String customerNo,
                            String senderAccountNo, String receiverAccountNo,
-                           double amount) {
+                           double amount, String pin) {
         Bank bank = getBankFromDB(bankNo);
-
         Customer customer = customerService.getCustomer(customerNo);
         Account senderAccount = accountService.getAccount(senderAccountNo);
         Account receiverAccount = accountService.getAccount(receiverAccountNo);
         if (bank.getCustomers().contains(customer)
                 && customer.getAccounts().contains(senderAccount)) {
-            TransactionHistory transferOutHistory = transferOut(amount,senderAccount,receiverAccount );
+
+            TransactionHistory transferOutHistory = transferOut(amount,senderAccount,receiverAccount);
             TransactionHistory transferInHistory = transferIn(amount,senderAccount,receiverAccount);
-            accountService.withdraw(senderAccountNo,amount,transferOutHistory);
+            accountService.withdraw(senderAccount,transferOutHistory,pin);
             accountService.deposit(receiverAccount,transferInHistory);
             return "transfer successful";
         }
 
-        throw new BankException("transfer failed");
+        return "transfer failed";
     }
 
     private TransactionHistory transferIn(double amount, Account senderAccount, Account receiverAccount) {
@@ -191,5 +179,17 @@ public class BankServiceImpl implements BankService {
             return account;
         }
         throw new BankException("account not found");
+    }
+
+    @Override
+    public String getBalance(String bankNo, String customerNo, String accountNo) {
+        Bank Bank = getBankFromDB(bankNo);
+        Customer customer = customerService.getCustomer(customerNo);
+        Account account = accountService.getAccount(accountNo);
+        if (Bank.getCustomers().contains(customer)
+                && customer.getAccounts().contains(account)) {
+            return String.valueOf(accountService.getBalance(account));
+        }
+        return "zero";
     }
 }

@@ -18,4 +18,10 @@ public class TransactionServiceImpl implements TransactionHistoryService{
     public void getTransaction(String transactionId) {
         int a = 0;
     }
+
+
+    @Override
+    public TransactionHistory depositHistory(double amount) {
+        return null;
+    }
 }
