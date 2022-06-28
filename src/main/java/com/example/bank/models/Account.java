@@ -18,6 +18,7 @@ public class Account {
     private String accountName;
     private String pin;
     private AccountTypes accountType;
+    private String dateCreated;
     @DBRef
     private List<TransactionHistory> transactionHistory = new ArrayList<>();
     public boolean pinIsValid(String pin){

@@ -18,14 +18,14 @@ public class Customer {
     private String id;
     private String customerNo;
     private LocalDate dob;
-    private  String firstName;
-    private  String lastName;
-    private  Gender gender;
-    private  String email;
-    private  String phoneNumber;
+    private String firstName;
+    private String lastName;
+    private Gender gender;
+    private String email;
+    private String phoneNumber;
+    private String dateCreated;
     @DBRef
     private List<Account> accounts = new ArrayList<>();
-
     public Customer(LocalDate dob, String firstName, String lastName, Gender gender, String email, String phoneNumber) {
         this.dob = dob;
         this.firstName = firstName;

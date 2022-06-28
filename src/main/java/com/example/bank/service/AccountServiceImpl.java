@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.example.bank.models.AccountTypes.SAVINGS;
 
@@ -23,9 +27,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account addAccount(Account account, String pin) {
-        account.setAccountNumber(String.valueOf(++uid));
+        account.setAccountNumber(generateAccountNo());
         account.setPin(pin);
         account.setAccountType(SAVINGS);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM--dd HH-mm");
+        account.setDateCreated(LocalDateTime.now().format(formatter));
         return accountRepository.save(account);
     }
 
@@ -69,6 +75,15 @@ public class AccountServiceImpl implements AccountService {
         return account.orElseThrow(() -> {
             throw new BankException("Account not found");
         });
+    }
+    private String generateAccountNo(){
+        Random random = new Random(10);
+        StringBuilder accountNo = new StringBuilder();
+        accountNo.append(102);
+        for (int i = 0; i <7 ; i++) {
+            accountNo.append(random.nextInt(10));
+        }
+        return accountNo.toString();
     }
 
 }

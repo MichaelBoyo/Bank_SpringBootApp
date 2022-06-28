@@ -16,11 +16,11 @@ public class TransactionHistory {
     private String transactionId;
     private BigDecimal amount;
     private TransactionType type;
-    private LocalDateTime date;
+    private String date;
     private String sender;
     private String  receiver;
     public TransactionHistory(String transactionId, BigDecimal amount,
-                              TransactionType type, LocalDateTime date,
+                              TransactionType type, String date,
                               String sender, String receiver) {
         this.transactionId = transactionId;
         this.amount = amount;

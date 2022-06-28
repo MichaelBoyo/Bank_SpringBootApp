@@ -11,5 +11,6 @@ public class BankResponse {
     private String bankNo;
     private String bankName;
     private int numberOfCustomers;
+    private String dateCreated;
     private List<Customer> customers;
 }
