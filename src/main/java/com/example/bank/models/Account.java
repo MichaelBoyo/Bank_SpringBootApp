@@ -23,4 +23,9 @@ public class Account {
     public boolean pinIsValid(String pin){
         return this.pin.equals(pin);
     }
+    public Account(){}
+    public Account(String accountName, AccountTypes accountType){
+        this.accountName = accountName;
+        this.accountType = accountType;
+    }
 }

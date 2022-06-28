@@ -4,6 +4,7 @@ import com.example.bank.exceptions.BankException;
 import com.example.bank.models.Account;
 import com.example.bank.models.TransactionHistory;
 import com.example.bank.repository.AccountRepository;
+import com.example.bank.repository.TransactionHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,11 @@ import static com.example.bank.models.AccountTypes.SAVINGS;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+    private static int uid = 0;
     @Autowired
     AccountRepository accountRepository;
-
-    private static int uid = 0;
+    @Autowired
+    TransactionHistoryRepository transactionHistoryRepository;
 
     @Override
     public Account addAccount(Account account, String pin) {
@@ -34,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
         account.getTransactionHistory().forEach(tx -> {
             switch (tx.getType()) {
                 case DEPOSIT, TRANSFER_IN -> balance[0] = balance[0].add(tx.getAmount());
-                case WITHDRAW, TRANSFER_OUT-> balance[0] = balance[0].subtract(tx.getAmount());
+                case WITHDRAW, TRANSFER_OUT -> balance[0] = balance[0].subtract(tx.getAmount());
             }
         });
         currentBalance = balance[0];
@@ -42,15 +44,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String deposit(Account account,TransactionHistory history) {
+    public String deposit(Account account, TransactionHistory history) {
+        history = transactionHistoryRepository.save(history);
         account.getTransactionHistory().add(history);
         accountRepository.save(account);
         return "deposit successful";
     }
 
     @Override
-    public String withdraw(Account account, TransactionHistory history,String pin) {
-        if(account.pinIsValid(pin)){
+    public String withdraw(Account account, TransactionHistory history, String pin) {
+        if (account.pinIsValid(pin)) {
+            history = transactionHistoryRepository.save(history);
             account.getTransactionHistory().add(history);
             accountRepository.save(account);
             return "successful";
@@ -62,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccount(String accountID) {
         Optional<Account> account = Optional.ofNullable(accountRepository.findAccountByAccountNumber(accountID));
-        return account.orElseThrow(()->{
+        return account.orElseThrow(() -> {
             throw new BankException("Account not found");
         });
     }
