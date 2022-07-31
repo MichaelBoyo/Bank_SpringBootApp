@@ -1,6 +1,6 @@
 package com.example.bank.models;
 
-import com.example.bank.exceptions.BankException;
+
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;

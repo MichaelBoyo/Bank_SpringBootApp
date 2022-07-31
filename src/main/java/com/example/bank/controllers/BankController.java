@@ -7,7 +7,6 @@ import com.example.bank.dto.response.AccountResp;
 import com.example.bank.dto.response.BankResponse;
 import com.example.bank.dto.response.CustomerResponse;
 import com.example.bank.exceptions.BankException;
-import com.example.bank.models.Bank;
 import com.example.bank.models.Customer;
 import com.example.bank.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +34,13 @@ public class BankController {
         }
     }
 
-    @GetMapping("/viewBank/{bankId}")
-    public BankResponse getBank(@PathVariable String bankId) {
+    @GetMapping("/viewBank")
+    public BankResponse getBank(@RequestParam String bankId) {
         return bankService.getBank(bankId);
     }
 
-    @PostMapping("/addCustomer/{bankNo}")
-    public ResponseEntity<?> addCustomer(@PathVariable String bankNo, @RequestBody CustomerRequest customer) {
+    @PostMapping("/addCustomer")
+    public ResponseEntity<?> addCustomer(@RequestParam String bankNo, @RequestBody CustomerRequest customer) {
         try {
             bankService.addCustomer(bankNo, customer);
             return new ResponseEntity<>("customer added successfully", HttpStatus.OK);
@@ -50,9 +49,9 @@ public class BankController {
         }
     }
 
-    @PostMapping("/addAccount/{bankNo}/{customerId}/{pin}")
-    public ResponseEntity<?> addAccount(@PathVariable String bankNo, @RequestBody AccountDto accountDto,
-                             @PathVariable String customerId, @PathVariable String pin) {
+    @PostMapping("/addAccount")
+    public ResponseEntity<?> addAccount(@RequestParam String bankNo, @RequestBody AccountDto accountDto,
+                             @RequestParam String customerId, @RequestParam String pin) {
         try {
             bankService.addAccount(bankNo, accountDto, customerId, pin);
             return new ResponseEntity<>("account added successfully", HttpStatus.OK);
@@ -61,20 +60,20 @@ public class BankController {
         }
     }
 
-    @GetMapping("/getCustomer/{bankNo}/{customerId}")
-    public CustomerResponse getCustomer(@PathVariable String bankNo, @PathVariable String customerId) {
+    @GetMapping("/getCustomer")
+    public CustomerResponse getCustomer(@RequestParam String bankNo, @RequestParam String customerId) {
         return bankService.getCustomer(bankNo, customerId);
     }
 
-    @GetMapping("/getAllCustomers/{bankNo}")
-    public List<Customer> getAllCustomers(@PathVariable String bankNo) {
+    @GetMapping("/getAllCustomers")
+    public List<Customer> getAllCustomers(@RequestParam String bankNo) {
         return bankService.getAllCustomers(bankNo);
     }
 
-    @PatchMapping("/deposit/{bankNo}/{customerNo}/{accountNo}/{amount}")
-    public ResponseEntity<?> deposit(@PathVariable String accountNo,
-                          @PathVariable String bankNo, @PathVariable String customerNo,
-                          @PathVariable double amount) {
+    @PatchMapping("/deposit")
+    public ResponseEntity<?> deposit(@RequestParam String accountNo,
+                                     @RequestParam  String bankNo, @RequestParam  String customerNo,
+                                     @RequestParam  double amount) {
         try {
             bankService.deposit(bankNo, customerNo, accountNo, amount);
             return new ResponseEntity<>("deposit successful", HttpStatus.OK);
@@ -84,10 +83,10 @@ public class BankController {
 
     }
 
-    @PatchMapping("/withdraw/{bankNo}/{customerNo}/{accountNo}/{amount}/{pin}")
-    public ResponseEntity<?> withdraw(@PathVariable String accountNo,
-                           @PathVariable String bankNo, @PathVariable String customerNo,
-                           @PathVariable double amount, @PathVariable String pin) {
+    @PatchMapping("/withdraw")
+    public ResponseEntity<?> withdraw(@RequestParam  String accountNo,
+                           @RequestParam  String bankNo, @RequestParam  String customerNo,
+                           @RequestParam  double amount, @RequestParam  String pin) {
         try {
             bankService.withdraw(bankNo, customerNo, accountNo, amount, pin);
             return new ResponseEntity<>("withdraw successful", HttpStatus.OK);
@@ -95,12 +94,12 @@ public class BankController {
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PatchMapping("/transfer/{bankNo}/{customerNo}/{senderAccountNo}/{receiverAccountNo}/{amount}/{pin}")
-    public ResponseEntity<?> transfer(@PathVariable String bankNo,
-                           @PathVariable String customerNo,
-                           @PathVariable String senderAccountNo,
-                           @PathVariable String receiverAccountNo,
-                           @PathVariable double amount, @PathVariable String pin) {
+    @PatchMapping("/transfer")
+    public ResponseEntity<?> transfer(@RequestParam  String bankNo,
+                           @RequestParam  String customerNo,
+                           @RequestParam  String senderAccountNo,
+                           @RequestParam  String receiverAccountNo,
+                           @RequestParam  double amount, @RequestParam  String pin) {
         try {
             bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount,pin);
             return new ResponseEntity<>("transfer successful", HttpStatus.OK);
@@ -108,9 +107,9 @@ public class BankController {
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/getAccount/{bankNo}/{customerNo}/{accountNo}")
-    public AccountResp getAccount(@PathVariable String accountNo, @PathVariable String bankNo,
-                                  @PathVariable String customerNo){
+    @GetMapping("/getAccount")
+    public AccountResp getAccount(@RequestParam  String accountNo, @RequestParam  String bankNo,
+                                  @RequestParam  String customerNo){
         try {
             return bankService.getAccount(bankNo,customerNo,accountNo);
         }catch (BankException e){
@@ -118,9 +117,9 @@ public class BankController {
         }
         return null;
     }
-    @GetMapping("/getBalance/{bankNo}/{customerNo}/{accountNo}")
-    public BigDecimal getBalance(@PathVariable String accountNo,
-                                 @PathVariable String bankNo, @PathVariable String customerNo){
+    @GetMapping("/getBalance")
+    public BigDecimal getBalance(@RequestParam  String accountNo,
+                                 @RequestParam  String bankNo, @RequestParam  String customerNo){
         return bankService.getBalance(bankNo,customerNo,accountNo);
     }
 }
