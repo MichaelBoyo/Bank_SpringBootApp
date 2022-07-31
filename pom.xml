@@ -14,7 +14,7 @@
     <name>spring-security-project2</name>
     <description>spring-security-project2</description>
     <properties>
-        <java.version>18</java.version>
+        <java.version>11</java.version>
     </properties>
     <dependencies>
         <dependency>
