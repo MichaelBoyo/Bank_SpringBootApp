@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class BankResponse {
-    private String bankNo;
+    private String bankId;
     private String bankName;
     private int numberOfCustomers;
     private String dateCreated;
