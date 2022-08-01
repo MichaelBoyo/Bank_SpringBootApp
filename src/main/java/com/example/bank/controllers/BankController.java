@@ -29,7 +29,7 @@ public class BankController {
         try {
             var bankCreated = bankService.createBank(bank);
             return new ResponseEntity<>(bank.getBankName()+"" +
-                    " bank created successfully with id "+bankCreated.getBankId(), HttpStatus.OK);
+                    " bank created successfully with id "+bankCreated.getBankNo(), HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus. BAD_REQUEST);
         }
