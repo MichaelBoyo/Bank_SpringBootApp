@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BankService {
-    void createBank(BankRequest bank);
+    Bank createBank(BankRequest bank);
     void addCustomer(String bankNo, CustomerRequest customer);
 
     void addAccount(String bankNo, AccountDto account, String customerID, String pin);

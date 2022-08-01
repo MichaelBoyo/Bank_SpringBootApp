@@ -40,10 +40,10 @@ public class BankServiceImpl implements BankService {
     TransactionHistoryService txService;
 
     @Override
-    public void createBank(BankRequest bankRequest) {
+    public Bank createBank(BankRequest bankRequest) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM--dd HH-mm");
         Bank bank = new Bank(bankRequest.getBankName(),generateBankNo(), LocalDateTime.now().format(formatter));
-        bankRepository.save(bank);
+        return bankRepository.save(bank);
     }
 
     private String generateBankNo() {

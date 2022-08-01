@@ -27,8 +27,9 @@ public class BankController {
     @PostMapping("/createBank")
     public ResponseEntity<?> createBank(@RequestBody BankRequest bank) {
         try {
-            bankService.createBank(bank);
-            return new ResponseEntity<>(bank.getBankName()+" bank created successfully", HttpStatus.OK);
+            var bankCreated = bankService.createBank(bank);
+            return new ResponseEntity<>(bank.getBankName()+"" +
+                    " bank created successfully with id "+bankCreated.getBankId(), HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus. BAD_REQUEST);
         }
