@@ -42,18 +42,8 @@ public class BankServiceImpl implements BankService {
     @Override
     public Bank createBank(BankRequest bankRequest) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM--dd HH-mm");
-        Bank bank = new Bank(bankRequest.getBankName(),generateBankNo(), LocalDateTime.now().format(formatter));
+        Bank bank = new Bank(bankRequest.getBankName(), LocalDateTime.now().format(formatter));
         return bankRepository.save(bank);
-    }
-
-    private String generateBankNo() {
-        Random random = new Random(10);
-        StringBuilder bankNo = new StringBuilder();
-        bankNo.append(1);
-        for (int i = 0; i < 3; i++) {
-            bankNo.append(random.nextInt(10));
-        }
-        return bankNo.toString();
     }
 
 
@@ -111,8 +101,8 @@ public class BankServiceImpl implements BankService {
         throw new BankException("error");
     }
 
-    private Bank getBankFromDB(String bankNo) {
-        Optional<Bank> bank = Optional.ofNullable(bankRepository.findBanksByBankNo(bankNo));
+    private Bank getBankFromDB(String bankId) {
+        Optional<Bank> bank = bankRepository.findById(bankId);
         return bank.orElseThrow(() -> {
             throw new BankException("bank not found");
         });
@@ -146,7 +136,7 @@ public class BankServiceImpl implements BankService {
     @Override
     public BankResponse getBank(String bankId) {
         Bank bank = getBankFromDB(bankId);
-        return new BankResponse(bank.getBankNo(),bank.getBankName(),
+        return new BankResponse(bank.getBankId(),bank.getBankName(),
                 bank.getCustomers().size(),bank.getDateCreated(),bank.getCustomers());
     }
 

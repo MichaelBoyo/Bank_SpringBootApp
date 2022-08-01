@@ -14,14 +14,12 @@ import java.util.List;
 public class Bank {
     @Id
     private String bankId;
-    private String bankNo;
     private String bankName;
     private String dateCreated;
     @DBRef
     private List<Customer> customers = new ArrayList<>();
 
-    public Bank(String bankName, String bankNo, String dateCreated) {
-        this.bankNo = bankNo;
+    public Bank(String bankNameSt, String dateCreated) {
         this.dateCreated = dateCreated;
         this.bankName = bankName;
     }
