@@ -4,10 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class AccountDto {
+public class GetCustomerDto {
     private String bankNo;
     private String customerId;
-    private String accountName;
-    private String pin;
-    private String accountType;
 }

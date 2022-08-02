@@ -1,8 +1,6 @@
 package com.example.bank.controllers;
 
-import com.example.bank.dto.requests.AccountDto;
-import com.example.bank.dto.requests.BankRequest;
-import com.example.bank.dto.requests.CustomerRequest;
+import com.example.bank.dto.requests.*;
 import com.example.bank.dto.response.AccountResp;
 import com.example.bank.dto.response.BankResponse;
 import com.example.bank.dto.response.CustomerResponse;
@@ -41,9 +39,9 @@ public class BankController {
     }
 
     @PostMapping("/addCustomer")
-    public ResponseEntity<?> addCustomer(@RequestParam String bankNo, @RequestBody CustomerRequest customer) {
+    public ResponseEntity<?> addCustomer(@RequestBody CustomerRequest customer) {
         try {
-            bankService.addCustomer(bankNo, customer);
+            bankService.addCustomer(customer.getBankNo(), customer);
             return new ResponseEntity<>("customer added successfully", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
@@ -51,10 +49,12 @@ public class BankController {
     }
 
     @PostMapping("/addAccount")
-    public ResponseEntity<?> addAccount(@RequestParam String bankNo, @RequestBody AccountDto accountDto,
-                             @RequestParam String customerId, @RequestParam String pin) {
+    public ResponseEntity<?> addAccount(@RequestBody AccountDto accountDto) {
+
         try {
-            bankService.addAccount(bankNo, accountDto, customerId, pin);
+            bankService.addAccount(accountDto.getBankNo(),
+                    accountDto, accountDto.getCustomerId(), accountDto.getPin());
+
             return new ResponseEntity<>("account added successfully", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
@@ -62,8 +62,9 @@ public class BankController {
     }
 
     @GetMapping("/getCustomer")
-    public CustomerResponse getCustomer(@RequestParam String bankNo, @RequestParam String customerId) {
-        return bankService.getCustomer(bankNo, customerId);
+    public CustomerResponse getCustomer(@RequestBody GetCustomerDto getCustomerDto) {
+        System.out.println(getCustomerDto.getCustomerId() +" and "+ getCustomerDto.getBankNo());
+        return bankService.getCustomer(getCustomerDto.getBankNo(), getCustomerDto.getCustomerId());
     }
 
     @GetMapping("/getAllCustomers")
@@ -72,12 +73,11 @@ public class BankController {
     }
 
     @PatchMapping("/deposit")
-    public ResponseEntity<?> deposit(@RequestParam String accountNo,
-                                     @RequestParam  String bankNo, @RequestParam  String customerNo,
-                                     @RequestParam  Double amount) {
+    public ResponseEntity<?> deposit(@RequestBody DepositRequest depositRequest) {
         try {
-            bankService.deposit(bankNo, customerNo, accountNo, amount);
-            return new ResponseEntity<>(amount+" deposited successfully", HttpStatus.OK);
+            bankService.deposit(depositRequest.getBankNo(), depositRequest.getCustomerNo(),
+                    depositRequest.getAccountNo(), depositRequest.getAmount());
+            return new ResponseEntity<>(depositRequest.getAmount()+" deposited successfully", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -87,10 +87,10 @@ public class BankController {
     @PatchMapping("/withdraw")
     public ResponseEntity<?> withdraw(@RequestParam  String accountNo,
                            @RequestParam  String bankNo, @RequestParam  String customerNo,
-                           @RequestParam  double amount, @RequestParam  String pin) {
+                           @RequestParam  Double amount, @RequestParam  String pin) {
         try {
             bankService.withdraw(bankNo, customerNo, accountNo, amount, pin);
-            return new ResponseEntity<>("withdraw successful", HttpStatus.OK);
+            return new ResponseEntity<>(amount+" withdraw successful", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -100,7 +100,7 @@ public class BankController {
                            @RequestParam  String customerNo,
                            @RequestParam  String senderAccountNo,
                            @RequestParam  String receiverAccountNo,
-                           @RequestParam  double amount, @RequestParam  String pin) {
+                           @RequestParam  Double amount, @RequestParam  String pin) {
         try {
             bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount,pin);
             return new ResponseEntity<>("transfer successful", HttpStatus.OK);
