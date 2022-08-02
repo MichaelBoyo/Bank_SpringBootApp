@@ -85,12 +85,12 @@ public class BankController {
     }
 
     @PatchMapping("/withdraw")
-    public ResponseEntity<?> withdraw(@RequestParam  String accountNo,
-                           @RequestParam  String bankNo, @RequestParam  String customerNo,
-                           @RequestParam  Double amount, @RequestParam  String pin) {
+    public ResponseEntity<?> withdraw(@RequestBody WithdrawRequest withdrawRequest) {
         try {
-            bankService.withdraw(bankNo, customerNo, accountNo, amount, pin);
-            return new ResponseEntity<>(amount+" withdraw successful", HttpStatus.OK);
+            bankService.withdraw(withdrawRequest.getBankNo(),
+                    withdrawRequest.getCustomerNo(), withdrawRequest.getAccountNo(),
+                    withdrawRequest.getAmount(), withdrawRequest.getPin());
+            return new ResponseEntity<>(withdrawRequest.getAmount()+" withdraw successful", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
