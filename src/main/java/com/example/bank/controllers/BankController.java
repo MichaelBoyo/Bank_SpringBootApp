@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/bank")
 public class BankController {
     @Autowired
-    BankService bankService;
+    private BankService bankService;
 
     @PostMapping("/createBank")
     public ResponseEntity<?> createBank(@RequestBody BankRequest bank) {
@@ -96,31 +96,30 @@ public class BankController {
         }
     }
     @PatchMapping("/transfer")
-    public ResponseEntity<?> transfer(@RequestParam  String bankNo,
-                           @RequestParam  String customerNo,
-                           @RequestParam  String senderAccountNo,
-                           @RequestParam  String receiverAccountNo,
-                           @RequestParam  Double amount, @RequestParam  String pin) {
+    public ResponseEntity<?> transfer(@RequestBody TransferRequest transferRequest) {
         try {
-            bankService.transfer(bankNo, customerNo, senderAccountNo, receiverAccountNo, amount,pin);
-            return new ResponseEntity<>("transfer successful", HttpStatus.OK);
+            bankService.transfer(transferRequest.getBankNo(), transferRequest.getCustomerNo(),
+                    transferRequest.getSenderAccountNo(), transferRequest.getReceiverAccountNo(),
+                    transferRequest.getAmount(),transferRequest.getPin());
+            return new ResponseEntity<>(transferRequest.getAmount()+" transferred successfully;", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping("/getAccount")
-    public AccountResp getAccount(@RequestParam  String accountNo, @RequestParam  String bankNo,
-                                  @RequestParam  String customerNo){
+    public AccountResp getAccount(@RequestBody GetAccountRequest getAccountRequest){
         try {
-            return bankService.getAccount(bankNo,customerNo,accountNo);
+            return bankService.getAccount(getAccountRequest.getBankNo(),getAccountRequest.getCustomerNo(),
+                    getAccountRequest.getAccountNo());
         }catch (BankException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return null;
+
     }
     @GetMapping("/getBalance")
-    public BigDecimal getBalance(@RequestParam  String accountNo,
-                                 @RequestParam  String bankNo, @RequestParam  String customerNo){
-        return bankService.getBalance(bankNo,customerNo,accountNo);
+    public BigDecimal getBalance(@RequestBody GetBalanceRequest getBalanceRequest){
+        return bankService.getBalance(getBalanceRequest.getBankNo(),
+                getBalanceRequest.getCustomerNo(),getBalanceRequest.getAccountNo());
     }
 }
