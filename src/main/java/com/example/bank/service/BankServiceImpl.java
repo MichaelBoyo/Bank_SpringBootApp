@@ -120,7 +120,7 @@ public class BankServiceImpl implements BankService {
                 TransactionHistory history = depositHistory(amount);
                 TransactionHistory history_ = txService.addTransaction(history);
                 accountService.deposit(account, history_);
-            } else throw new BankException("account: " + account.getAccountNumber()
+            } else throw new BankException("account: " + account.getId()
                     + " doesnt belong to customer: " + customer.getFirstName());
         } else throw new BankException("customer with " + customerNo + " doesn't exist in " + bank.getBankName());
 
@@ -154,7 +154,7 @@ public class BankServiceImpl implements BankService {
                     accountService.withdraw(account, history_, pin);
                 } else throw new BankException("inSufficient balance");
             } else
-                throw new BankException("account: " + account.getAccountNumber() +
+                throw new BankException("account: " + account.getId() +
                         " doesnt belong to customer: " + customer.getFirstName());
         } else throw new BankException("customer with " + customerNo + " doesn't exist in " + bank.getBankName());
     }
@@ -206,7 +206,7 @@ public class BankServiceImpl implements BankService {
         Account account = accountService.getAccount(accountID);
         if (Bank.getCustomers().contains(customer)
                 && customer.getAccounts().contains(account)) {
-            return new AccountResp(account.getAccountNumber(), account.getAccountName(),
+            return new AccountResp(account.getId(), account.getAccountName(),
                     account.getAccountType(), account.getTransactionHistory());
         }
         throw new BankException("account not found");

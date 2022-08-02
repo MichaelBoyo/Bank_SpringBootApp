@@ -16,7 +16,6 @@ import java.util.List;
 public class Customer {
     @Id
     private String id;
-    private String customerNo;
     private LocalDate dob;
     private String firstName;
     private String lastName;

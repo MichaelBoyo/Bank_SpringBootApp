@@ -74,10 +74,10 @@ public class BankController {
     @PatchMapping("/deposit")
     public ResponseEntity<?> deposit(@RequestParam String accountNo,
                                      @RequestParam  String bankNo, @RequestParam  String customerNo,
-                                     @RequestParam  double amount) {
+                                     @RequestParam  Double amount) {
         try {
             bankService.deposit(bankNo, customerNo, accountNo, amount);
-            return new ResponseEntity<>("deposit successful", HttpStatus.OK);
+            return new ResponseEntity<>(amount+" deposited successfully", HttpStatus.OK);
         } catch (BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }

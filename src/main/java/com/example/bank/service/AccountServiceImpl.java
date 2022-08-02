@@ -27,7 +27,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account addAccount(Account account, String pin) {
-        account.setAccountNumber(generateAccountNo());
         account.setPin(pin);
         account.setAccountType(SAVINGS);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM--dd HH-mm");
@@ -71,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(String accountID) {
-        Optional<Account> account = Optional.ofNullable(accountRepository.findAccountByAccountNumber(accountID));
+        Optional<Account> account = accountRepository.findById(accountID);
         return account.orElseThrow(() -> {
             throw new BankException("Account not found");
         });

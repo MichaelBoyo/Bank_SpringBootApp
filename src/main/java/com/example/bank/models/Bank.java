@@ -19,7 +19,7 @@ public class Bank {
     @DBRef
     private List<Customer> customers = new ArrayList<>();
 
-    public Bank(String bankNameSt, String dateCreated) {
+    public Bank(String bankName, String dateCreated) {
         this.dateCreated = dateCreated;
         this.bankName = bankName;
     }

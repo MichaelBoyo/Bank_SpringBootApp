@@ -14,7 +14,6 @@ import java.util.List;
 public class Account {
     @Id
     private String id;
-    private String accountNumber;
     private String accountName;
     private String pin;
     private AccountTypes accountType;
