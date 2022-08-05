@@ -43,7 +43,7 @@ public class BankController {
         try {
             bankService.addCustomer(customer.getBankNo(), customer);
             return new ResponseEntity<>("customer added successfully", HttpStatus.OK);
-        } catch (BankException err){
+        }catch(BankException err){
             return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
